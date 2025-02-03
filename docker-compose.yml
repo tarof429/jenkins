@@ -1,25 +1,18 @@
-version: '3.4'
 services:
     jenkins:
-        build:
-            context: .
-            dockerfile: Dockerfile
+        image: jenkins/jenkins:lts-jdk17
         ports:
             - "8080:8080"
             - "50000:50000"
         volumes:
             - jenkins_home:/var/jenkins_home
-            - ./backup:/backup
-            - ./scripts:/scripts
-            - /var/run/docker.sock:/var/run/docker.sock
-            - /usr/bin/docker:/usr/bin/docker
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/login"]
+            test: ["CMD", "curl", "-f", "http://jenkins:8080/login"]
             interval: 1m30s
             timeout: 10s
             retries: 3
             start_period: 40s
-        privileged: true
+        restart: on-failure
               
 volumes:
     jenkins_home:
